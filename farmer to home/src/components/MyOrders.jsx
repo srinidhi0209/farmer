@@ -9,7 +9,7 @@ function MyOrders() {
     const fetchOrders = async () => {
       if (!user?._id) return;
       try {
-        const res = await fetch(`http://localhost:5000/api/orders/customer/${user._id}`);
+        const res = await fetch(`https://farm-to-home-backend.onrender.com/api/orders/customer/${user._id}`);
         const data = await res.json();
         setOrders(data);
       } catch (err) {
