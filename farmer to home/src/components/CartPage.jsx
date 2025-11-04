@@ -39,7 +39,7 @@ function CartPage({ cart, setCart }) {
     };
 
     try {
-      const res = await axios.post("http://localhost:5000/api/orders", orderData);
+      const res = await axios.post("https://farm-to-home-backend.onrender.com/api/orders", orderData);
       alert("✅ Order placed successfully!");
       setCart([]);
       setAddress("");
