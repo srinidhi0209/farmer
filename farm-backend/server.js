@@ -3,19 +3,22 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: "*"
+}));
+
 app.use(express.json());
 
-//  MongoDB connection
+// ✅ MongoDB connection
 mongoose
   .connect("mongodb+srv://katurisrinidhi4_db_user:srinidhi@cluster0.nogxvdh.mongodb.net/?appName=Cluster0", {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
-  .then(() => console.log(" MongoDB connected"))
-  .catch((err) => console.error(" MongoDB error:", err));
+  .then(() => console.log("✅ MongoDB connected"))
+  .catch((err) => console.error("❌ MongoDB error:", err));
 
-//  User Schema
+// ✅ User Schema
 const userSchema = new mongoose.Schema({
   name: String,
   email: { type: String, unique: true },
@@ -24,7 +27,7 @@ const userSchema = new mongoose.Schema({
 });
 const User = mongoose.model("User", userSchema);
 
-// Order Schema
+// ✅ Order Schema
 const orderSchema = new mongoose.Schema({
   customerId: String,
   customerName: String,
@@ -43,7 +46,7 @@ const orderSchema = new mongoose.Schema({
 });
 const Order = mongoose.model("Order", orderSchema);
 
-// Register User
+// ✅ Register User
 app.post("/api/register", async (req, res) => {
   try {
     const { name, email, phone, password } = req.body;
