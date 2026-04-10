@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { API_ENDPOINTS } from "../constants/api";
+import styles from "./MyOrders.module.css";
 
 function MyOrders() {
   const [orders, setOrders] = useState([]);
@@ -9,7 +11,7 @@ function MyOrders() {
     const fetchOrders = async () => {
       if (!user?._id) return;
       try {
-        const res = await fetch(`http://localhost:5000/api/orders/customer/${user._id}`);
+        const res = await fetch(API_ENDPOINTS.CUSTOMER_ORDERS(user._id));
         const data = await res.json();
         setOrders(data);
       } catch (err) {

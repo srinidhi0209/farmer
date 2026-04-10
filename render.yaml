@@ -1,0 +1,28 @@
+services:
+  # Backend Service
+  - type: web
+    name: farm-backend
+    env: node
+    repo: https://github.com/srinidhi0209/farmer.git
+    rootDir: farm-backend
+    buildCommand: "npm install"
+    startCommand: "npm start"
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: FRONTEND_URL
+        value: https://farm-to-home.onrender.com
+
+  # Frontend Service
+  - type: web
+    name: farm-frontend
+    env: static
+    repo: https://github.com/srinidhi0209/farmer.git
+    rootDir: farmer to home
+    buildCommand: "npm install && npm run build"
+    staticPublishPath: dist
+    envVars:
+      - key: VITE_API_URL
+        value: https://farm-backend.onrender.com

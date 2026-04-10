@@ -1,6 +1,8 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { API_ENDPOINTS } from "../constants/api";
 import styles from "./CartPage.module.css";
 
 function CartPage({ cart, setCart }) {
@@ -82,7 +84,7 @@ function CartPage({ cart, setCart }) {
     };
 
     try {
-      const res = await axios.post("http://localhost:5000/api/orders", orderData);
+      const res = await axios.post(API_ENDPOINTS.ORDERS, orderData);
       setSuccess("Order confirmed! Please select payment method.");
       setShowPayment(true);
       setTimeout(() => setSuccess(""), 5000);

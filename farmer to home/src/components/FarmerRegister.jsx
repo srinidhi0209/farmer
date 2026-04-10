@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { API_ENDPOINTS } from "../constants/api";
 import styles from "./FarmerRegister.module.css";
 
 function FarmerRegister() {
@@ -80,7 +81,7 @@ function FarmerRegister() {
 
     try {
       // Call backend API for farmer registration
-      const res = await fetch("http://localhost:5000/api/farmer-register", {
+      const res = await fetch(API_ENDPOINTS.FARMER_REGISTER, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

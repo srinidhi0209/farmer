@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { API_ENDPOINTS } from "../constants/api";
 import styles from "./FarmerDashboard.module.css";
 
 function FarmerDashboard({ setRole, setUser }) {
@@ -26,7 +27,7 @@ function FarmerDashboard({ setRole, setUser }) {
   };
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/orders")
+    fetch(API_ENDPOINTS.ORDERS)
       .then((res) => res.json())
       .then((data) => setOrders(data))
       .catch((err) => console.error("Error fetching orders:", err));

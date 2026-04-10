@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { API_ENDPOINTS } from "../constants/api";
 import styles from "./Login.module.css";
 
 function Login({ setRole, setUser }) {
@@ -18,7 +19,7 @@ function Login({ setRole, setUser }) {
 
     // 👩‍💼 Customer login via backend
     try {
-      const res = await fetch("http://localhost:5000/api/login", {
+      const res = await fetch(API_ENDPOINTS.LOGIN, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
