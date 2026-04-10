@@ -1,0 +1,192 @@
+.aboutContainer {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  padding: 80px 20px;
+}
+
+.header {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto 60px;
+}
+
+.title {
+  fontSize: "48px";
+  fontWeight: 700;
+  color: #2c3e50;
+  marginBottom: "20px";
+  textShadow: "2px 2px 4px rgba(0,0,0,0.1)";
+}
+
+.subtitle {
+  fontSize: "20px";
+  color: #7f8c8d;
+  lineHeight: "1.6";
+  marginBottom: "40px";
+}
+
+.content {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.missionSection {
+  background: white;
+  padding: 40px;
+  borderRadius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  marginBottom: 40px;
+}
+
+.sectionTitle {
+  fontSize: "28px";
+  fontWeight: 600;
+  color: #2c3e50;
+  marginBottom: "20px";
+  textAlign: center;
+}
+
+.sectionContent {
+  fontSize: "16px";
+  color: #5a6c7d;
+  lineHeight: "1.8";
+  textAlign: center;
+}
+
+.featuresGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  margin-bottom: 40px;
+}
+
+.featureCard {
+  background: white;
+  padding: 30px;
+  borderRadius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  textAlign: center;
+  transition: transform 0.3s ease;
+}
+
+.featureCard:hover {
+  transform: translateY(-5px);
+}
+
+.featureIcon {
+  fontSize: "48px";
+  marginBottom: "20px";
+  color: #4CAF50;
+}
+
+.featureTitle {
+  fontSize: "20px";
+  fontWeight: 600;
+  color: #2c3e50;
+  marginBottom: "15px";
+}
+
+.featureDescription {
+  fontSize: "14px";
+  color: #7f8c8d;
+  lineHeight: "1.6";
+}
+
+.statsSection {
+  background: linear-gradient(135deg, #4CAF50, #45a049);
+  color: white;
+  padding: 60px 40px;
+  borderRadius: 16px;
+  textAlign: center;
+  marginBottom: 40px;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 40px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.statItem {
+  textAlign: center;
+}
+
+.statNumber {
+  fontSize: "48px";
+  fontWeight: 700;
+  marginBottom: "10px";
+}
+
+.statLabel {
+  fontSize: "16px";
+  opacity: 0.9;
+}
+
+.ctaSection {
+  background: white;
+  padding: 40px;
+  borderRadius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  textAlign: center;
+}
+
+.ctaTitle {
+  fontSize: "28px";
+  fontWeight: 600;
+  color: #2c3e50;
+  marginBottom: "20px";
+}
+
+.ctaDescription {
+  fontSize: "16px";
+  color: #7f8c8d;
+  marginBottom: "30px";
+  lineHeight: "1.6";
+}
+
+.ctaButton {
+  background: linear-gradient(135deg, #4CAF50, #45a049);
+  color: white;
+  border: none;
+  padding: 15px 30px;
+  borderRadius: 25px;
+  fontSize: "16px";
+  fontWeight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.ctaButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(76, 175, 80, 0.3);
+}
+
+@media (max-width: 768px) {
+  .title {
+    fontSize: "36px";
+  }
+  
+  .subtitle {
+    fontSize: "18px";
+  }
+  
+  .featuresGrid,
+  .statsGrid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .missionSection,
+  .featureCard,
+  .ctaSection {
+    padding: 25px;
+  }
+  
+  .statsSection {
+    padding: 40px 25px;
+  }
+}

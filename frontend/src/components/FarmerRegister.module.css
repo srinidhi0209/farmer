@@ -1,0 +1,336 @@
+.registerWrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f0f9ff 0%, #e8f5e8 25%, #fef3e2 50%, #f0f9ff 75%, #e8f5e8 100%);
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.registerWrapper::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    radial-gradient(circle at 20% 30%, rgba(34, 197, 94, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(251, 146, 60, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(147, 197, 253, 0.05) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+.registerWrapper::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(34, 197, 94, 0.03) 35px, rgba(34, 197, 94, 0.03) 70px),
+    repeating-linear-gradient(-45deg, transparent, transparent 35px, rgba(251, 146, 60, 0.03) 35px, rgba(251, 146, 60, 0.03) 70px);
+  pointer-events: none;
+  z-index: -1;
+}
+
+.registerBox {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.25);
+  width: 100%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  position: relative;
+}
+
+.registerBox::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #22c55e 0%, #fb923c 50%, #22c55e 100%);
+  border-radius: 20px 20px 0 0;
+}
+
+.farmerHeader {
+  margin-bottom: 30px;
+}
+
+.farmerIcon {
+  font-size: 3rem;
+  margin-bottom: 15px;
+  animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-10px);
+  }
+  60% {
+    transform: translateY(-5px);
+  }
+}
+
+.title {
+  color: #2c3e50;
+  margin-bottom: 8px;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.subtitle {
+  color: #7f8c8d;
+  margin-bottom: 25px;
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+.form {
+  text-align: left;
+}
+
+.formSection {
+  margin-bottom: 30px;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 12px;
+  border: 1px solid #e9ecef;
+}
+
+.formSection h3 {
+  color: #2c3e50;
+  margin-bottom: 20px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.formGroup {
+  margin-bottom: 20px;
+}
+
+.formLabel {
+  display: block;
+  margin-bottom: 8px;
+  color: #555555;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.formInput,
+.formSelect,
+.formTextarea {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #e1e5e9;
+  border-radius: 10px;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  background: #ffffff;
+}
+
+.formInput:focus,
+.formSelect:focus,
+.formTextarea:focus {
+  outline: none;
+  border-color: #22c55e;
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1);
+}
+
+.formTextarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.specialtyGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.specialtyOption {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  border: 2px solid #e1e5e9;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: #ffffff;
+}
+
+.specialtyOption:hover {
+  border-color: #22c55e;
+  background: #f0fdf4;
+}
+
+.specialtyOption input[type="checkbox"]:checked + .specialtyLabel {
+  color: #16a34a;
+  font-weight: 600;
+}
+
+.specialtyCheckbox {
+  margin-right: 10px;
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.specialtyLabel {
+  font-size: 0.95rem;
+  color: #555555;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.registerButton {
+  width: 100%;
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  color: white;
+  border: none;
+  padding: 16px 24px;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  outline: none;
+  margin-top: 20px;
+}
+
+.registerButton::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.registerButton:hover::before {
+  left: 100%;
+}
+
+.registerButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(34, 197, 94, 0.3);
+}
+
+.registerButton:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 8px rgba(34, 197, 94, 0.2);
+}
+
+.registerButton.loading {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.error {
+  background: #fee2e2;
+  color: #dc2626;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  border: 1px solid #fecaca;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.success {
+  background: #dcfce7;
+  color: #16a34a;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  border: 1px solid #bbf7d0;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.registerLinks {
+  margin-top: 25px;
+  text-align: center;
+}
+
+.linkText {
+  color: #6b7280;
+  font-size: 0.9rem;
+  margin-bottom: 10px;
+  line-height: 1.4;
+}
+
+.link {
+  color: #22c55e;
+  text-decoration: none;
+  font-weight: 600;
+  margin-left: 5px;
+  transition: color 0.3s ease;
+}
+
+.link:hover {
+  color: #16a34a;
+  text-decoration: underline;
+}
+
+/* Scrollbar styling */
+.registerBox::-webkit-scrollbar {
+  width: 8px;
+}
+
+.registerBox::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.registerBox::-webkit-scrollbar-thumb {
+  background: #22c55e;
+  border-radius: 10px;
+}
+
+.registerBox::-webkit-scrollbar-thumb:hover {
+  background: #16a34a;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .registerBox {
+    padding: 20px;
+    margin: 10px;
+    max-width: none;
+  }
+  
+  .formSection {
+    padding: 15px;
+  }
+  
+  .specialtyGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .title {
+    font-size: 1.5rem;
+  }
+}
