@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import styles from "./Login.module.css";
+import styles from "./FarmerLogin.module.css";
 
-function Login({ setRole, setUser }) {
+function FarmerLogin({ setRole, setUser }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -16,30 +16,30 @@ function Login({ setRole, setUser }) {
     setSuccess("");
     setIsLoading(true);
 
-    // 👩‍💼 Customer login via backend
+    // 🧑‍🌾 Farmer login via backend
     try {
       const res = await fetch("http://localhost:5000/api/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password, role: "farmer" }),
       });
 
       const data = await res.json();
       if (!res.ok) {
-        setError(data.message || "Invalid credentials!");
+        setError(data.message || "Invalid farmer credentials!");
         return;
       }
 
-      const userData = { ...data, role: "customer" };
+      const userData = { ...data, role: "farmer" };
       localStorage.setItem("user", JSON.stringify(userData));
       setUser(userData);
-      setSuccess("Customer logged in successfully!");
-      setRole("customer");
+      setSuccess("Farmer logged in successfully!");
+      setRole("farmer");
       setTimeout(() => {
-        navigate("/customer-dashboard");
+        navigate("/farmer-dashboard");
       }, 1000);
     } catch (err) {
-      console.error("Login error:", err);
+      console.error("Farmer login error:", err);
       setError("Server error, please try again later.");
     } finally {
       setIsLoading(false);
@@ -49,10 +49,10 @@ function Login({ setRole, setUser }) {
   return (
     <div className={styles.loginWrapper}>
       <div className={styles.loginBox}>
-        <div className={styles.customerHeader}>
-          <div className={styles.customerIcon}>👩‍💼</div>
-          <h2 className={styles.title}>Customer Login</h2>
-          <p className={styles.subtitle}>Access your shopping portal</p>
+        <div className={styles.farmerHeader}>
+          <div className={styles.farmerIcon}>👩‍🌾</div>
+          <h2 className={styles.title}>Farmer Login</h2>
+          <p className={styles.subtitle}>Access your farm management portal</p>
         </div>
         
         {error && <div className={styles.error}>{error}</div>}
@@ -63,7 +63,7 @@ function Login({ setRole, setUser }) {
             <label className={styles.formLabel}>📧 Email</label>
             <input
               type="email"
-              placeholder="Enter your email"
+              placeholder="farmer@gmail.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className={styles.formInput}
@@ -79,7 +79,7 @@ function Login({ setRole, setUser }) {
             <label className={styles.formLabel}>🔐 Password</label>
             <input
               type="password"
-              placeholder="Enter your password"
+              placeholder="Enter password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className={styles.formInput}
@@ -96,17 +96,23 @@ function Login({ setRole, setUser }) {
             className={`${styles.loginButton} ${isLoading ? styles.loading : ''}`}
             disabled={isLoading}
           >
-            {isLoading ? "Logging in..." : "🛒 Customer Login"}
+            {isLoading ? "Logging in..." : "🌾 Login to Farm Portal"}
           </button>
         </form>
         
+        <div className={styles.farmerInfo}>
+          <h3>🌾 Farmer Login</h3>
+          <p>Login with your registered farm credentials</p>
+          <p>New farmer? <Link to="/farmer-register" className={styles.link}>Register here</Link></p>
+        </div>
+        
         <div className={styles.loginLinks}>
           <p className={styles.linkText}>
-            Are you a farmer? 
-            <Link to="/farmer-login" className={styles.link}> Farmer Login</Link>
+            Are you a customer? 
+            <Link to="/login" className={styles.link}> Customer Login</Link>
           </p>
           <p className={styles.linkText}>
-            New customer? 
+            New farmer? 
             <Link to="/register" className={styles.link}> Register Here</Link>
           </p>
         </div>
@@ -115,4 +121,4 @@ function Login({ setRole, setUser }) {
   );
 }
 
-export default Login;
+export default FarmerLogin;

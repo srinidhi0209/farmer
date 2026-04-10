@@ -1,34 +1,79 @@
+require('dotenv').config();
 const express = require("express");
 const cors = require("cors");
-const mongoose = require("mongoose");
 
 const app = express();
-app.use(cors({
-  origin: "*"
-}));
 
+// CORS configuration
+const corsOptions = {
+  origin: process.env.FRONTEND_URL || "http://localhost:5173",
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 
-// ✅ MongoDB connection
-mongoose
-  .connect("mongodb+srv://katurisrinidhi4_db_user:srinidhi@cluster0.nogxvdh.mongodb.net/?appName=Cluster0", {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => console.log("✅ MongoDB connected"))
-  .catch((err) => console.error("❌ MongoDB error:", err));
+// In-memory storage for demo (instead of MongoDB)
+let users = [];
+let orders = [];
+
+console.log("✅ Server started with in-memory storage (demo mode)");
+
+// Input validation middleware
+const validateInput = (req, res, next) => {
+  const { name, email, phone, password } = req.body;
+  
+  if (name && (typeof name !== 'string' || name.trim().length < 2)) {
+    return res.status(400).json({ message: "Name must be at least 2 characters long" });
+  }
+  
+  if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return res.status(400).json({ message: "Invalid email format" });
+  }
+  
+  if (phone && !/^\d{10}$/.test(phone.replace(/\s/g, ''))) {
+    return res.status(400).json({ message: "Phone number must be 10 digits" });
+  }
+  
+  if (password && password.length < 6) {
+    return res.status(400).json({ message: "Password must be at least 6 characters long" });
+  }
+  
+  next();
+};
 
 // ✅ User Schema
-const userSchema = new mongoose.Schema({
-  name: String,
-  email: { type: String, unique: true },
-  phone: String,
-  password: String,
-});
-const User = mongoose.model("User", userSchema);
+const userSchema = {
+  name: { 
+    type: String, 
+    required: true,
+    trim: true,
+    minlength: 2,
+    maxlength: 50
+  },
+  email: { 
+    type: String, 
+    required: true,
+    unique: true,
+    trim: true,
+    lowercase: true
+  },
+  phone: { 
+    type: String, 
+    required: true,
+    trim: true
+  },
+  password: { 
+    type: String, 
+    required: true,
+    minlength: 6
+  },
+};
 
 // ✅ Order Schema
-const orderSchema = new mongoose.Schema({
+const orderSchema = {
   customerId: String,
   customerName: String,
   customerEmail: String,
@@ -43,11 +88,10 @@ const orderSchema = new mongoose.Schema({
   ],
   totalCost: Number,
   date: { type: Date, default: Date.now },
-});
-const Order = mongoose.model("Order", orderSchema);
+};
 
-// ✅ Register User
-app.post("/api/register", async (req, res) => {
+// ✅ Register Customer
+app.post("/api/register", validateInput, (req, res) => {
   try {
     const { name, email, phone, password } = req.body;
 
@@ -56,56 +100,134 @@ app.post("/api/register", async (req, res) => {
     }
 
     // Check if user already exists
-    const existingUser = await User.findOne({ email });
+    const existingUser = users.find(u => u.email === email.toLowerCase().trim());
     if (existingUser) {
       return res.status(409).json({ message: "Email already registered" });
     }
 
-    // Save new user
-    const newUser = new User({ name, email, phone, password });
-    await newUser.save();
+    // Save new customer with sanitized data
+    const newUser = {
+      _id: Date.now().toString(),
+      name: name.trim(), 
+      email: email.toLowerCase().trim(), 
+      phone: phone.replace(/\s/g, ''), 
+      password,
+      role: "customer"
+    };
+    
+    users.push(newUser);
 
     res.status(201).json({
-      message: " Registration successful!",
+      message: "Customer registration successful!",
       user: {
         _id: newUser._id,
         name: newUser.name,
         email: newUser.email,
         phone: newUser.phone,
+        role: newUser.role,
       },
     });
   } catch (err) {
     console.error("Registration error:", err);
-    res.status(500).json({ message: " Registration failed", error: err.message });
+    res.status(500).json({ message: "Registration failed", error: err.message });
+  }
+});
+
+// ✅ Register Farmer
+app.post("/api/farmer-register", (req, res) => {
+  try {
+    const { 
+      farmName, 
+      ownerName, 
+      email, 
+      phone, 
+      password, 
+      location, 
+      farmSize, 
+      experience, 
+      specialties, 
+      description 
+    } = req.body;
+
+    if (!farmName || !ownerName || !email || !phone || !password || !location || !specialties || specialties.length === 0) {
+      return res.status(400).json({ message: "All required fields must be filled" });
+    }
+
+    // Check if farmer already exists
+    const existingFarmer = users.find(u => u.email === email.toLowerCase().trim());
+    if (existingFarmer) {
+      return res.status(409).json({ message: "Email already registered" });
+    }
+
+    // Save new farmer with sanitized data
+    const newFarmer = {
+      _id: Date.now().toString(),
+      farmName: farmName.trim(),
+      name: ownerName.trim(),
+      email: email.toLowerCase().trim(), 
+      phone: phone.replace(/\s/g, ''), 
+      password,
+      location: location.trim(),
+      farmSize: farmSize || "Not specified",
+      experience: experience || "Not specified",
+      specialties: specialties,
+      description: description || "",
+      role: "farmer",
+      date: new Date()
+    };
+    
+    users.push(newFarmer);
+
+    res.status(201).json({
+      message: "Farmer registration successful!",
+      user: {
+        _id: newFarmer._id,
+        farmName: newFarmer.farmName,
+        name: newFarmer.name,
+        email: newFarmer.email,
+        phone: newFarmer.phone,
+        location: newFarmer.location,
+        farmSize: newFarmer.farmSize,
+        experience: newFarmer.experience,
+        specialties: newFarmer.specialties,
+        description: newFarmer.description,
+        role: newFarmer.role,
+      },
+    });
+  } catch (err) {
+    console.error("Farmer registration error:", err);
+    res.status(500).json({ message: "Farmer registration failed", error: err.message });
   }
 });
 
 //  Login (Customer + Farmer)
 app.post("/api/login", async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password, role } = req.body;
 
-    // Farmer (Admin) Login
-    if (email === "farmer@gmail.com" && password === "farmer123") {
-      return res.json({
-        role: "farmer",
-        name: "Farmer Admin",
-        email: "farmer@gmail.com",
-        phone: "N/A",
-        _id: "admin-fixed-id",
-      });
+    // Find user by email and password
+    const user = users.find(
+      (u) => u.email === email && u.password === password
+    );
+
+    if (!user) {
+      return res
+        .status(400)
+        .json({ message: "Invalid email or password" });
     }
 
-    // Customer Login
-    const user = await User.findOne({ email, password }).select("-password");
-    if (!user) return res.status(401).json({ message: "Invalid credentials" });
+    // Check if role matches (if role is specified)
+    if (role && user.role !== role) {
+      return res
+        .status(400)
+        .json({ message: `This account is not registered as a ${role}` });
+    }
 
-    res.json({
-      role: "customer",
-      ...user.toObject(),
-    });
+    const { password: _, ...userWithoutPassword } = user;
+    res.json(userWithoutPassword);
   } catch (err) {
-    res.status(500).json({ message: "Login failed", error: err.message });
+    console.error("Login error:", err);
+    res.status(500).json({ message: "Server error" });
   }
 });
 
@@ -120,13 +242,15 @@ app.post("/api/orders", async (req, res) => {
       address,
       items,
       totalCost,
+      deliveryDate,
     } = req.body;
 
     if (!customerEmail || !items || items.length === 0) {
       return res.status(400).json({ message: "Invalid order data" });
     }
 
-    const order = new Order({
+    const order = {
+      _id: Date.now().toString(),
       customerId,
       customerName,
       customerEmail,
@@ -134,9 +258,11 @@ app.post("/api/orders", async (req, res) => {
       address,
       items,
       totalCost,
-    });
+      deliveryDate,
+      date: new Date()
+    };
 
-    await order.save();
+    orders.push(order);
     res.json({ message: " Order placed successfully!", order });
   } catch (err) {
     console.error("Order error:", err);
@@ -147,10 +273,9 @@ app.post("/api/orders", async (req, res) => {
 });
 
 //  View All Orders (Farmer)
-app.get("/api/orders", async (req, res) => {
+app.get("/api/orders", (req, res) => {
   try {
-    const orders = await Order.find().sort({ date: -1 });
-    res.json(orders);
+    res.json(orders.sort((a, b) => new Date(b.date) - new Date(a.date)));
   } catch (err) {
     res
       .status(500)
@@ -159,16 +284,16 @@ app.get("/api/orders", async (req, res) => {
 });
 
 //  View Orders by Customer ID (Customer)
-app.get("/api/orders/customer/:customerId", async (req, res) => {
+app.get("/api/orders/customer/:customerId", (req, res) => {
   try {
     const { customerId } = req.params;
-    const orders = await Order.find({ customerId }).sort({ date: -1 });
+    const customerOrders = orders.filter(o => o.customerId === customerId);
 
-    if (orders.length === 0) {
+    if (customerOrders.length === 0) {
       return res.status(404).json({ message: "No orders found for this user" });
     }
 
-    res.json(orders);
+    res.json(customerOrders);
   } catch (err) {
     res
       .status(500)
@@ -177,7 +302,8 @@ app.get("/api/orders/customer/:customerId", async (req, res) => {
 });
 
 //  Server Start
-const PORT = 5000;
-app.listen(PORT, () =>
-  console.log(` Backend running on http://localhost:${PORT}`)
-);
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log(`🚀 Backend running on http://localhost:${PORT}`);
+  console.log(`📱 Environment: ${process.env.NODE_ENV || 'development'}`);
+});

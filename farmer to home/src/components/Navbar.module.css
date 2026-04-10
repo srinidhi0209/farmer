@@ -1,0 +1,234 @@
+.navbarContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 32px;
+  background: #FFFFFF;
+  color: #333333;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border-bottom: 1px solid #F0F0F0;
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #000000;
+  text-decoration: none;
+  letter-spacing: -0.5px;
+}
+
+.navLinks {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.navLink {
+  color: #666666;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+  font-size: 0.95rem;
+  padding: 0;
+  border-radius: 0;
+  display: inline-block;
+}
+
+.navLink:hover {
+  color: #000000;
+  background-color: transparent;
+  transform: none;
+}
+
+.userSection {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.userInfo {
+  color: #333333;
+  font-weight: 600;
+  padding: 6px 12px;
+  background-color: #F5F5F5;
+  border-radius: 4px;
+}
+
+.logoutButton {
+  background: #666666;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 12px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.logoutButton:hover {
+  background: #333333;
+  transform: translateY(-1px);
+}
+
+.loginButton {
+  background: #000000;
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+  padding: 8px 16px;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  display: inline-block;
+  font-size: 0.9rem;
+  border: none;
+  cursor: pointer;
+  outline: none;
+}
+
+.loginButton:hover {
+  background: #333333;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.loginButton:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.registerButton {
+  background: transparent;
+  color: #666666;
+  text-decoration: none;
+  font-weight: 500;
+  padding: 8px 16px;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  display: inline-block;
+  font-size: 0.9rem;
+  border: 1px solid #E0E0E0;
+  cursor: pointer;
+  outline: none;
+}
+
+.registerButton:hover {
+  background: #F8F9FA;
+  color: #000000;
+  border-color: #D0D0D0;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.registerButton:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.cartLink {
+  background: transparent;
+  color: #666666;
+  text-decoration: none;
+  font-weight: 500;
+  padding: 8px 16px;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  display: inline-block;
+  font-size: 0.9rem;
+  border: 1px solid #E0E0E0;
+}
+
+.cartLink:hover {
+  background: #F8F9FA;
+  color: #000000;
+  border-color: #D0D0D0;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.loginDropdown {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.farmerLoginButton {
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.farmerLoginButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(34, 197, 94, 0.3);
+}
+
+.farmerLoginButton:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 8px rgba(34, 197, 94, 0.2);
+}
+
+.registerDropdown {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.farmerRegisterButton {
+  background: linear-gradient(135deg, #fb923c 0%, #f97316 100%);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.farmerRegisterButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(251, 146, 60, 0.3);
+}
+
+.farmerRegisterButton:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 8px rgba(251, 146, 60, 0.2);
+}
+
+@media (max-width: 768px) {
+  .navbarContainer {
+    padding: 12px 16px;
+  }
+  
+  .navLinks {
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  
+  .loginDropdown,
+  .registerDropdown {
+    flex-direction: column;
+    gap: 4px;
+  }
+  
+  .navLink, .loginButton, .farmerLoginButton, .registerButton, .farmerRegisterButton, .cartLink {
+    padding: 4px 8px;
+    font-size: 0.9rem;
+  }
+  
+  .userSection {
+    flex-direction: column;
+    gap: 4px;
+  }
+}

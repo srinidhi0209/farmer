@@ -1,11 +1,35 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { Link } from "react-router-dom";
+import styles from "./CartPage.module.css";
 
 function CartPage({ cart, setCart }) {
   const [address, setAddress] = useState("");
   const [phone, setPhone] = useState("");
+  const [deliveryDate, setDeliveryDate] = useState("");
   const [showForm, setShowForm] = useState(false);
+  const [showPayment, setShowPayment] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState("");
   const user = JSON.parse(localStorage.getItem("user"));
+
+  // If user is not logged in, show login prompt
+  if (!user) {
+    return (
+      <div className={styles.cartPage}>
+        <div className={styles.loginPrompt}>
+          <h2>🔐 Login Required</h2>
+          <p>Please login to access your cart and place orders.</p>
+          <div className={styles.loginButtons}>
+            <Link to="/login" className={styles.loginButton}>Login</Link>
+            <Link to="/register" className={styles.registerButton}>Register</Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const handleRemove = (index) => {
     const updated = cart.filter((_, i) => i !== index);
@@ -14,189 +38,236 @@ function CartPage({ cart, setCart }) {
 
   const total = cart.reduce((sum, item) => sum + item.price, 0);
 
+  const getMinDate = () => {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    return tomorrow.toISOString().split('T')[0];
+  };
+
   const handleOrderNow = () => {
     if (cart.length === 0) {
-      alert("Your cart is empty!");
+      setError("Your cart is empty!");
+      setTimeout(() => setError(""), 3000);
       return;
     }
+    setError("");
     setShowForm(true);
   };
 
   const handleSubmitOrder = async () => {
-    if (!address || !phone) {
-      alert("Please enter address and phone number");
+    if (!address.trim() || !phone.trim() || !deliveryDate) {
+      setError("Please enter address, phone number, and delivery date");
+      setTimeout(() => setError(""), 3000);
       return;
     }
 
+    if (!/^\d{10}$/.test(phone.replace(/\s/g, ''))) {
+      setError("Please enter a valid 10-digit phone number");
+      setTimeout(() => setError(""), 3000);
+      return;
+    }
+
+    setIsLoading(true);
+    setError("");
+
     const orderData = {
-      totalCost: total,
-      items: cart,
-      address,
-      phone,
-      customerEmail: user?.email,
       customerId: user?._id,
       customerName: user?.name,
+      customerEmail: user?.email,
+      phone: phone.trim(),
+      address: address.trim(),
+      items: cart,
+      totalCost: total,
+      deliveryDate: deliveryDate,
     };
 
     try {
-      const res = await axios.post("https://farm-to-home-backend.onrender.com/api/orders", orderData);
-      alert("✅ Order placed successfully!");
-      setCart([]);
-      setAddress("");
-      setPhone("");
-      setShowForm(false);
+      const res = await axios.post("http://localhost:5000/api/orders", orderData);
+      setSuccess("Order confirmed! Please select payment method.");
+      setShowPayment(true);
+      setTimeout(() => setSuccess(""), 5000);
     } catch (error) {
-      console.error(error);
-      alert("❌ Failed to place order. Please try again.");
+      console.error("Order error:", error);
+      setError(error.response?.data?.message || "Failed to place order. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
+  const handlePayment = () => {
+    if (!paymentMethod) {
+      setError("Please select a payment method");
+      return;
+    }
+    
+    setError("");
+    const formattedDate = new Date(deliveryDate).toLocaleDateString('en-US', { 
+      weekday: 'long', 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    });
+    setSuccess(`Payment successful via ${paymentMethod}! Order completed. Delivery on ${formattedDate}.`);
+    setCart([]);
+    setAddress("");
+    setPhone("");
+    setDeliveryDate("");
+    setShowForm(false);
+    setShowPayment(false);
+    setPaymentMethod("");
+    setTimeout(() => setSuccess(""), 5000);
+  };
+
   return (
-    <div
-      className="cart-page"
-      style={{
-        padding: "20px",
-        maxWidth: "800px",
-        margin: "0 auto",
-        fontFamily: "Arial, sans-serif",
-      }}
-    >
-      <h1>🛍️ Your Cart</h1>
+    <div className={styles.cartPage}>
+      <h1 className={styles.title}>🛍️ Your Cart</h1>
+
+      {error && <div className={styles.error}>{error}</div>}
+      {success && <div className={styles.success}>{success}</div>}
 
       {cart.length === 0 ? (
-        <p>Your cart is empty 🛒</p>
+        <p className={styles.emptyCart}>Your cart is empty 🛒</p>
       ) : (
         <>
           {cart.map((item, i) => (
-            <div
-              key={i}
-              className="cart-item"
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                border: "1px solid #ddd",
-                borderRadius: "10px",
-                padding: "10px",
-                marginBottom: "15px",
-                boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
-              }}
-            >
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "15px",
-                }}
-              >
+            <div key={i} className={styles.cartItem}>
+              <div className={styles.itemDetails}>
                 <img
                   src={item.image}
                   alt={item.name}
-                  style={{
-                    width: "80px",
-                    height: "80px",
-                    objectFit: "cover",
-                    borderRadius: "8px",
-                  }}
+                  className={styles.itemImage}
                 />
-                <p style={{ margin: 0, fontSize: "16px" }}>
-                  <b>{item.name}</b> – ₹{item.price}
+                <p className={styles.itemInfo}>
+                  <span className={styles.itemName}>{item.name}</span> – 
+                  <span className={styles.itemPrice}>₹{item.price}</span>
                 </p>
               </div>
               <button
                 onClick={() => handleRemove(i)}
-                style={{
-                  background: "#ff4d4d",
-                  color: "#fff",
-                  border: "none",
-                  borderRadius: "5px",
-                  padding: "8px 12px",
-                  cursor: "pointer",
-                }}
+                className={styles.removeButton}
               >
                 Remove
               </button>
             </div>
           ))}
 
-          <h3
-            style={{
-              textAlign: "right",
-              marginTop: "20px",
-              fontSize: "18px",
-            }}
-          >
+          <div className={styles.totalSection}>
             Total: ₹{total}
-          </h3>
+          </div>
 
           {!showForm ? (
-            <div style={{ textAlign: "center", marginTop: "20px" }}>
+            <div className={styles.orderButtonContainer}>
               <button
                 onClick={handleOrderNow}
-                style={{
-                  background: "#4CAF50",
-                  color: "#fff",
-                  border: "none",
-                  borderRadius: "5px",
-                  padding: "10px 20px",
-                  cursor: "pointer",
-                  fontSize: "16px",
-                }}
+                className={styles.orderButton}
               >
                 🛒 Order Now
               </button>
             </div>
           ) : (
-            <div
-              style={{
-                marginTop: "20px",
-                border: "1px solid #ccc",
-                padding: "15px",
-                borderRadius: "8px",
-                background: "#f9f9f9",
-              }}
-            >
-              <h3>Enter Delivery Details</h3>
-              <label>Address:</label>
-              <textarea
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-                rows="3"
-                style={{
-                  width: "100%",
-                  marginBottom: "10px",
-                  padding: "8px",
-                  borderRadius: "5px",
-                  border: "1px solid #ccc",
-                }}
-              ></textarea>
+            <div className={styles.deliveryForm}>
+              <h3 className={styles.formTitle}>Enter Delivery Details</h3>
+              
+              <div className={styles.formGroup}>
+                <label className={styles.formLabel}>Address:</label>
+                <textarea
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                  rows="3"
+                  className={styles.formTextarea}
+                  placeholder="Enter your complete delivery address"
+                />
+              </div>
 
-              <label>Phone Number:</label>
-              <input
-                type="text"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                style={{
-                  width: "100%",
-                  marginBottom: "10px",
-                  padding: "8px",
-                  borderRadius: "5px",
-                  border: "1px solid #ccc",
-                }}
-              />
+              <div className={styles.formGroup}>
+                <label className={styles.formLabel}>Phone Number:</label>
+                <input
+                  type="tel"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  className={styles.formInput}
+                  placeholder="Enter your 10-digit phone number"
+                  maxLength={10}
+                />
+              </div>
+
+              <div className={styles.formGroup}>
+                <label className={styles.formLabel}>📅 Delivery Date:</label>
+                <input
+                  type="date"
+                  value={deliveryDate}
+                  onChange={(e) => setDeliveryDate(e.target.value)}
+                  className={styles.formInput}
+                  min={getMinDate()}
+                  required
+                />
+              </div>
 
               <button
                 onClick={handleSubmitOrder}
-                style={{
-                  background: "#007bff",
-                  color: "#fff",
-                  border: "none",
-                  borderRadius: "5px",
-                  padding: "10px 20px",
-                  cursor: "pointer",
-                }}
+                className={styles.submitButton}
+                disabled={isLoading}
               >
-                ✅ Confirm Order
+                {isLoading ? "Processing..." : "✅ Confirm Order"}
+              </button>
+            </div>
+          )}
+
+          {showPayment && (
+            <div className={styles.paymentForm}>
+              <h3 className={styles.formTitle}>💳 Select Payment Method</h3>
+              
+              <div className={styles.paymentOptions}>
+                <label className={styles.paymentOption}>
+                  <input
+                    type="radio"
+                    name="payment"
+                    value="Credit Card"
+                    onChange={(e) => setPaymentMethod(e.target.value)}
+                    className={styles.paymentRadio}
+                  />
+                  <span className={styles.paymentLabel}>💳 Credit Card</span>
+                </label>
+                
+                <label className={styles.paymentOption}>
+                  <input
+                    type="radio"
+                    name="payment"
+                    value="Debit Card"
+                    onChange={(e) => setPaymentMethod(e.target.value)}
+                    className={styles.paymentRadio}
+                  />
+                  <span className={styles.paymentLabel}>💳 Debit Card</span>
+                </label>
+                
+                <label className={styles.paymentOption}>
+                  <input
+                    type="radio"
+                    name="payment"
+                    value="UPI"
+                    onChange={(e) => setPaymentMethod(e.target.value)}
+                    className={styles.paymentRadio}
+                  />
+                  <span className={styles.paymentLabel}>📱 UPI</span>
+                </label>
+                
+                <label className={styles.paymentOption}>
+                  <input
+                    type="radio"
+                    name="payment"
+                    value="Cash on Delivery"
+                    onChange={(e) => setPaymentMethod(e.target.value)}
+                    className={styles.paymentRadio}
+                  />
+                  <span className={styles.paymentLabel}>💵 Cash on Delivery</span>
+                </label>
+              </div>
+
+              <button
+                onClick={handlePayment}
+                className={styles.paymentButton}
+              >
+                💳 Complete Payment
               </button>
             </div>
           )}

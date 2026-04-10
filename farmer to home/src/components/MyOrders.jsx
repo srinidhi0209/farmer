@@ -9,7 +9,7 @@ function MyOrders() {
     const fetchOrders = async () => {
       if (!user?._id) return;
       try {
-        const res = await fetch(`https://farm-to-home-backend.onrender.com/api/orders/customer/${user._id}`);
+        const res = await fetch(`http://localhost:5000/api/orders/customer/${user._id}`);
         const data = await res.json();
         setOrders(data);
       } catch (err) {
@@ -37,6 +37,12 @@ function MyOrders() {
           {orders.map((order, index) => (
             <div key={index} style={{ border: "1px solid #ddd", padding: "10px", marginBottom: "10px", borderRadius: "10px" }}>
               <p><b>Order Date:</b> {new Date(order.date).toLocaleString()}</p>
+              <p><b>📅 Delivery Date:</b> {order.deliveryDate ? new Date(order.deliveryDate).toLocaleDateString('en-US', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+              }) : 'Not specified'}</p>
               <p><b>Total Cost:</b> ₹{order.totalCost}</p>
               <p><b>Address:</b> {order.address}</p>
               <ul>
